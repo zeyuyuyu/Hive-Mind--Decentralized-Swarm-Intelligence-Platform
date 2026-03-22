@@ -3,197 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HiveMind - Swarm Intelligence Platform</title>
-    <style>
-        :root {
-            --primary: #FF6B6B;
-            --secondary: #4ECDC4;
-            --dark: #292F36;
-            --light: #F7F7F7;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            background: var(--dark);
-            color: var(--light);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 3rem;
-        }
-
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--primary);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .swarm-visualization {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            position: relative;
-            min-height: 400px;
-            overflow: hidden;
-        }
-
-        .agent {
-            width: 20px;
-            height: 20px;
-            background: var(--secondary);
-            border-radius: 50%;
-            position: absolute;
-            transition: all 0.5s ease;
-            cursor: pointer;
-        }
-
-        .agent:hover {
-            transform: scale(1.2);
-            box-shadow: 0 0 20px var(--secondary);
-        }
-
-        .metrics {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .metric-card {
-            background: rgba(255,255,255,0.1);
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .metric-value {
-            font-size: 2rem;
-            color: var(--primary);
-            margin: 1rem 0;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-    </style>
+    <title>HiveMind - Collective Intelligence Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
-<body>
-    <div class="container">
-        <header class="header">
-            <div class="logo">HiveMind</div>
-            <nav>
-                <button onclick="toggleSimulation()" id="sim-toggle" 
-                    style="padding: 0.5rem 1rem; background: var(--primary); border: none; 
-                    color: white; border-radius: 5px; cursor: pointer;">
-                    Start Simulation
-                </button>
-            </nav>
-        </header>
+<body class="bg-gray-900 text-white">
+    <div id="app" class="min-h-screen">
+        <!-- Floating Achievement Notifications -->
+        <div id="achievements" class="fixed top-4 right-4 z-50"></div>
 
-        <div class="swarm-visualization" id="swarm-container"></div>
+        <!-- Hero Section with Animated Particles -->
+        <div class="relative overflow-hidden">
+            <div id="particles-js" class="absolute inset-0"></div>
+            <div class="container mx-auto px-6 py-16 relative z-10">
+                <div class="flex flex-col items-center">
+                    <div class="animate__animated animate__fadeIn">
+                        <h1 class="text-5xl font-bold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">Join the HiveMind</h1>
+                        <p class="text-xl text-center mb-8">Your influence grows with every contribution</p>
+                    </div>
+                    
+                    <!-- Real-time Stats Bar -->
+                    <div class="w-full max-w-4xl bg-gray-800 rounded-lg p-4 mb-8">
+                        <div class="flex justify-between items-center">
+                            <div class="text-center">
+                                <span class="block text-2xl font-bold text-purple-400 counter">24,891</span>
+                                <span class="text-sm">Active Minds</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-2xl font-bold text-green-400 counter">1.2M</span>
+                                <span class="text-sm">Total Solutions</span>
+                            </div>
+                            <div class="text-center">
+                                <span class="block text-2xl font-bold text-pink-400 counter">$42,150</span>
+                                <span class="text-sm">Rewards Distributed</span>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="metrics">
-            <div class="metric-card">
-                <h3>Active Agents</h3>
-                <div class="metric-value" id="agent-count">0</div>
-            </div>
-            <div class="metric-card">
-                <h3>Swarm Efficiency</h3>
-                <div class="metric-value" id="efficiency">0%</div>
-            </div>
-            <div class="metric-card">
-                <h3>Tasks Completed</h3>
-                <div class="metric-value" id="tasks">0</div>
+                    <!-- Reputation Level System -->
+                    <div class="w-full max-w-md bg-gray-800 rounded-lg p-6 mb-8">
+                        <div class="flex items-center mb-4">
+                            <div class="relative">
+                                <img src="https://api.dicebear.com/6.x/avatars/svg?seed=user123" class="w-16 h-16 rounded-full">
+                                <span class="absolute -top-2 -right-2 bg-purple-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">23</span>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="font-bold text-xl">Level 23 Mind</h3>
+                                <div class="w-full bg-gray-700 rounded-full h-2 mt-2">
+                                    <div class="bg-purple-500 rounded-full h-2" style="width: 75%"></div>
+                                </div>
+                                <p class="text-sm mt-1">1,250 XP to next level</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Challenge Feed -->
+                    <div class="w-full max-w-4xl">
+                        <h2 class="text-2xl font-bold mb-6">🔥 Trending Challenges</h2>
+                        <div class="grid gap-6">
+                            <!-- Challenge Card -->
+                            <div class="bg-gray-800 rounded-lg p-6 transform hover:scale-102 transition-transform cursor-pointer">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <span class="px-2 py-1 bg-purple-500 rounded-full text-sm">500 XP</span>
+                                        <h3 class="text-xl font-bold mt-2">Optimize Solar Panel Placement Algorithm</h3>
+                                        <p class="text-gray-400 mt-2">Help improve renewable energy efficiency</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="text-green-400 font-bold">$420</span>
+                                        <p class="text-sm text-gray-400">12 solutions</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center mt-4">
+                                    <div class="flex -space-x-2">
+                                        <img src="https://api.dicebear.com/6.x/avatars/svg?seed=1" class="w-8 h-8 rounded-full border-2 border-gray-800">
+                                        <img src="https://api.dicebear.com/6.x/avatars/svg?seed=2" class="w-8 h-8 rounded-full border-2 border-gray-800">
+                                        <img src="https://api.dicebear.com/6.x/avatars/svg?seed=3" class="w-8 h-8 rounded-full border-2 border-gray-800">
+                                    </div>
+                                    <span class="ml-2 text-sm text-gray-400">+9 others working on this</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        let agents = [];
-        let isSimulationRunning = false;
-        let taskCount = 0;
-
-        function createAgent() {
-            const agent = document.createElement('div');
-            agent.className = 'agent';
-            agent.style.left = Math.random() * 90 + '%';
-            agent.style.top = Math.random() * 90 + '%';
-            document.getElementById('swarm-container').appendChild(agent);
-            agents.push(agent);
-            updateMetrics();
-        }
-
-        function moveAgents() {
-            if (!isSimulationRunning) return;
-
-            agents.forEach(agent => {
-                const newX = Math.random() * 90;
-                const newY = Math.random() * 90;
-                agent.style.left = newX + '%';
-                agent.style.top = newY + '%';
-
-                if (Math.random() > 0.9) {
-                    taskCount++;
-                    agent.style.animation = 'pulse 0.5s';
-                    setTimeout(() => agent.style.animation = '', 500);
-                }
-            });
-
-            updateMetrics();
-            setTimeout(moveAgents, 2000);
-        }
-
-        function updateMetrics() {
-            document.getElementById('agent-count').textContent = agents.length;
-            document.getElementById('efficiency').textContent = 
-                Math.round((taskCount / (agents.length || 1)) * 100) + '%';
-            document.getElementById('tasks').textContent = taskCount;
-        }
-
-        function toggleSimulation() {
-            isSimulationRunning = !isSimulationRunning;
-            const btn = document.getElementById('sim-toggle');
-            btn.textContent = isSimulationRunning ? 'Stop Simulation' : 'Start Simulation';
-            btn.style.background = isSimulationRunning ? 'var(--secondary)' : 'var(--primary)';
-
-            if (isSimulationRunning) {
-                moveAgents();
-                const interval = setInterval(() => {
-                    if (!isSimulationRunning) {
-                        clearInterval(interval);
-                        return;
-                    }
-                    if (agents.length < 20) createAgent();
-                }, 1000);
+        // Initialize particle effect
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80 },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                move: { speed: 1 }
             }
+        });
+
+        // Achievement notification system
+        function showAchievement(title, description) {
+            const achievementDiv = document.createElement('div');
+            achievementDiv.className = 'bg-purple-500 text-white p-4 rounded-lg mb-4 animate__animated animate__fadeInRight';
+            achievementDiv.innerHTML = `
+                <h4 class="font-bold">${title}</h4>
+                <p class="text-sm">${description}</p>
+            `;
+            document.getElementById('achievements').appendChild(achievementDiv);
+            setTimeout(() => {
+                achievementDiv.classList.remove('animate__fadeInRight');
+                achievementDiv.classList.add('animate__fadeOutRight');
+                setTimeout(() => achievementDiv.remove(), 1000);
+            }, 3000);
         }
 
-        // Initial agents
-        for (let i = 0; i < 5; i++) createAgent();
+        // Simulate real-time updates
+        setInterval(() => {
+            document.querySelectorAll('.counter').forEach(counter => {
+                const current = parseInt(counter.textContent.replace(/,/g, ''));
+                counter.textContent = (current + Math.floor(Math.random() * 10)).toLocaleString();
+            });
+        }, 2000);
+
+        // Simulate achievement triggers
+        setTimeout(() => {
+            showAchievement('🌟 Quick Learner', '+50 XP for your first contribution!');
+        }, 3000);
+        setTimeout(() => {
+            showAchievement('🔥 On Fire!', '3 day contribution streak!');
+        }, 6000);
     </script>
 </body>
 </html>
