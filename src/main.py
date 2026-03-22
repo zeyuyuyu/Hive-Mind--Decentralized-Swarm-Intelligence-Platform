@@ -1,69 +1,59 @@
+# Hive-Mind: Decentralized Swarm Intelligence Platform
+
 import asyncio
 import random
 
 class Agent:
     def __init__(self, id):
         self.id = id
-        self.beliefs = {}
-        self.connections = []
-        self.vote_power = 1
+        self.state = 'idle'
+        self.neighbors = []
 
-    async def update_beliefs(self):
-        """Update beliefs based on messages from connected agents."""
-        for connection in self.connections:
-            message = await connection.receive_message()
-            self.beliefs.update(message)
+    async def run(self):
+        while True:
+            if self.state == 'idle':
+                await self.discover_neighbors()
+                await self.propose_decision()
+            elif self.state == 'proposing':
+                await self.gather_votes()
+            elif self.state == 'voting':
+                await self.tally_votes()
+            await asyncio.sleep(random.uniform(0.1, 1.0))
 
-    async def broadcast_beliefs(self):
-        """Broadcast current beliefs to connected agents."""
-        for connection in self.connections:
-            await connection.send_message(self.beliefs)
+    async def discover_neighbors(self):
+        # Discover neighboring agents in the swarm
+        self.neighbors = [Agent(i) for i in range(random.randint(3, 10))]
+        self.state = 'proposing'
 
-    async def vote(self, proposal):
-        """Vote on a proposal based on current beliefs."""
-        vote_power = self.vote_power
-        if proposal in self.beliefs and self.beliefs[proposal]:
-            return vote_power
+    async def propose_decision(self):
+        # Propose a decision for the swarm to consider
+        self.proposal = {'action': random.choice(['move', 'split', 'merge'])}
+        for neighbor in self.neighbors:
+            await neighbor.receive_proposal(self.proposal)
+        self.state = 'voting'
+
+    async def receive_proposal(self, proposal):
+        # Receive a proposal from a neighboring agent
+        print(f'Agent {self.id} received proposal: {proposal}')
+
+    async def gather_votes(self):
+        # Gather votes from neighboring agents on the current proposal
+        self.votes = {agent: random.choice([True, False]) for agent in self.neighbors}
+        self.state = 'tally'
+
+    async def tally_votes(self):
+        # Tally the votes and decide whether to implement the proposal
+        total_votes = sum(self.votes.values())
+        print(f'Agent {self.id} proposal vote tally: {total_votes} for, {len(self.neighbors) - total_votes} against')
+        if total_votes > len(self.neighbors) // 2:
+            print(f'Agent {self.id} implementing proposal: {self.proposal}')
         else:
-            return -vote_power
+            print(f'Agent {self.id} rejecting proposal: {self.proposal}')
+        self.state = 'idle'
 
-class Connection:
-    def __init__(self, agent1, agent2):
-        self.agent1 = agent1
-        self.agent2 = agent2
-        self.message_queue = asyncio.Queue()
-
-    async def send_message(self, message):
-        await self.message_queue.put(message)
-
-    async def receive_message(self):
-        return await self.message_queue.get()
-
-async def run_governance_protocol(agents):
-    """Decentralized governance protocol for the swarm."""
-    connections = [Connection(agents[i], agents[j]) for i in range(len(agents)) for j in range(i+1, len(agents))]
-    for agent in agents:
-        agent.connections = [conn for conn in connections if agent in (conn.agent1, conn.agent2)]
-
-    while True:
-        # Update beliefs
-        await asyncio.gather(*[agent.update_beliefs() for agent in agents])
-
-        # Broadcast beliefs
-        await asyncio.gather(*[agent.broadcast_beliefs() for agent in agents])
-
-        # Vote on proposals
-        proposals = [f"Proposal {i}" for i in range(3)]
-        votes = await asyncio.gather(*[agent.vote(random.choice(proposals)) for agent in agents])
-        total_votes = sum(votes)
-        print(f"Votes for proposals: {[p: v for p, v in zip(proposals, votes)]}, Total votes: {total_votes}")
-
-        # Adjust agent vote power based on voting results
-        for agent, vote in zip(agents, votes):
-            agent.vote_power = max(1, agent.vote_power + vote)
-
-        await asyncio.sleep(5)
-
-if __name__ == "__main__":
+async def main():
     agents = [Agent(i) for i in range(10)]
-    asyncio.run(run_governance_protocol(agents))
+    await asyncio.gather(*[agent.run() for agent in agents])
+
+if __name__ == '__main__':
+    asyncio.run(main())
