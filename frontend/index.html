@@ -5,141 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HiveMind - Join the Collective Intelligence</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/confetti-js"></script>
+    <style>
+        .achievement-popup { animation: popup 0.5s ease-out; }
+        @keyframes popup { from {transform: scale(0);} to {transform: scale(1);} }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.7);} 70% {box-shadow: 0 0 0 10px rgba(66, 153, 225, 0);} 100% {box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);} }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-purple-900 to-indigo-900 text-white min-h-screen">
-    <div id="confetti-container" class="fixed inset-0 pointer-events-none"></div>
-    
-    <nav class="p-4 flex justify-between items-center">
-        <div class="flex items-center space-x-2">
-            <img src="/assets/hive-logo.svg" class="w-8 h-8" alt="HiveMind Logo">
-            <span class="text-2xl font-bold">HiveMind</span>
-        </div>
-        <div class="flex items-center space-x-4">
-            <span class="px-3 py-1 bg-purple-500 rounded-full text-sm">🔥 <span id="active-users">1,547</span> minds connected</span>
-            <div class="relative">
-                <img src="/assets/avatar.jpg" class="w-10 h-10 rounded-full border-2 border-purple-400">
-                <span class="absolute -top-1 -right-1 bg-green-400 w-3 h-3 rounded-full border-2 border-white"></span>
+<body class="bg-gray-900 text-white">
+    <nav class="fixed top-0 w-full bg-gray-800 shadow-lg z-50">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="/assets/hive-logo.svg" class="h-8 w-8 mr-2">
+                <span class="text-xl font-bold">HiveMind</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <span class="text-2xl">🏆</span>
+                    <span id="points" class="absolute -top-2 -right-2 bg-yellow-500 rounded-full px-2 py-1 text-xs">0</span>
+                </div>
+                <div class="relative">
+                    <button id="streak-btn" class="pulse bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg">
+                        🔥 <span id="streak-count">0</span> Day Streak
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 py-8">
-        <div class="text-center mb-12">
-            <h1 class="text-5xl font-bold mb-4">Join the Collective Intelligence</h1>
-            <p class="text-xl text-purple-200">Solve problems together, earn rewards, level up your mind</p>
-        </div>
+    <main class="container mx-auto px-6 pt-24">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-xl">
+                <h2 class="text-2xl font-bold mb-4">Live Hive Activity</h2>
+                <div id="activity-feed" class="space-y-4 h-96 overflow-y-auto">
+                    <!-- Dynamic activity items -->
+                </div>
+            </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div class="bg-white/10 p-6 rounded-xl backdrop-blur-lg">
+            <div class="bg-gray-800 rounded-xl p-6 shadow-xl">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-semibold">Your Impact</h3>
-                    <span class="text-purple-300">Level 7</span>
+                    <h2 class="text-2xl font-bold">Your Impact</h2>
+                    <button onclick="shareAchievements()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg flex items-center">
+                        🌟 Share Progress
+                    </button>
                 </div>
-                <div class="space-y-4">
-                    <div class="relative pt-1">
-                        <div class="flex mb-2 items-center justify-between">
-                            <div>
-                                <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full bg-purple-500">
-                                    Progress to Level 8
-                                </span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-xs font-semibold inline-block">70%</span>
-                            </div>
-                        </div>
-                        <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-purple-900">
-                            <div style="width:70%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-500"></div>
-                        </div>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span>🧠 Intelligence Points: 1,234</span>
-                        <span>🏆 Rank: #156</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white/10 p-6 rounded-xl backdrop-blur-lg">
-                <h3 class="text-xl font-semibold mb-4">Live Challenges</h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between p-3 bg-purple-800/50 rounded-lg cursor-pointer hover:bg-purple-700/50 transition">
-                        <div>
-                            <p class="font-medium">Climate Solution Challenge</p>
-                            <p class="text-sm text-purple-300">🔥 847 minds working</p>
-                        </div>
-                        <span class="text-purple-400">+500 pts</span>
-                    </div>
-                    <div class="flex items-center justify-between p-3 bg-purple-800/50 rounded-lg cursor-pointer hover:bg-purple-700/50 transition">
-                        <div>
-                            <p class="font-medium">AI Ethics Debate</p>
-                            <p class="text-sm text-purple-300">🎯 Trending</p>
-                        </div>
-                        <span class="text-purple-400">+300 pts</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white/10 p-6 rounded-xl backdrop-blur-lg">
-                <h3 class="text-xl font-semibold mb-4">Leaderboard</h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-yellow-400 font-bold">1</span>
-                            <img src="/assets/top1.jpg" class="w-8 h-8 rounded-full">
-                            <span>MindMaster</span>
-                        </div>
-                        <span>12,847 pts</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-gray-400 font-bold">2</span>
-                            <img src="/assets/top2.jpg" class="w-8 h-8 rounded-full">
-                            <span>SwarmQueen</span>
-                        </div>
-                        <span>11,253 pts</span>
-                    </div>
+                <div id="achievements" class="grid grid-cols-3 gap-4">
+                    <!-- Achievement badges -->
                 </div>
             </div>
         </div>
 
-        <div class="fixed bottom-4 right-4 flex space-x-4">
-            <button class="px-6 py-3 bg-purple-500 rounded-full font-semibold hover:bg-purple-600 transition-colors flex items-center space-x-2">
-                <span>🎮 Join Challenge</span>
-            </button>
-            <button class="px-6 py-3 bg-purple-500/20 backdrop-blur-lg rounded-full font-semibold hover:bg-purple-500/30 transition-colors flex items-center space-x-2" onclick="shareAchievement()">
-                <span>📢 Share Achievement</span>
-            </button>
+        <div class="mt-8 bg-gray-800 rounded-xl p-6 shadow-xl">
+            <h2 class="text-2xl font-bold mb-4">Global Leaderboard</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg p-4">
+                    <h3 class="text-xl font-bold">🥇 First Place</h3>
+                    <div id="first-place" class="mt-2"></div>
+                </div>
+                <!-- Other leaderboard positions -->
+            </div>
         </div>
     </main>
 
+    <div id="achievement-popup" class="fixed bottom-4 right-4 hidden achievement-popup bg-green-500 text-white p-4 rounded-lg shadow-xl">
+        🎉 New Achievement Unlocked!
+    </div>
+
     <script>
-        // Simulated active users counter
+        // Gamification mechanics
+        let points = 0;
+        let streak = 0;
+        
+        function updatePoints(amount) {
+            points += amount;
+            document.getElementById('points').textContent = points;
+            checkAchievements();
+        }
+
+        function checkAchievements() {
+            if(points >= 100) showAchievement('First Century! 🎯');
+            if(streak >= 7) showAchievement('Week Warrior! 🗡️');
+        }
+
+        function showAchievement(text) {
+            const popup = document.getElementById('achievement-popup');
+            popup.textContent = `🎉 Achievement Unlocked: ${text}`;
+            popup.classList.remove('hidden');
+            setTimeout(() => popup.classList.add('hidden'), 3000);
+        }
+
+        function shareAchievements() {
+            const text = `🚀 I've earned ${points} points on HiveMind with a ${streak}-day streak! Join the collective intelligence revolution! #HiveMind #CollectiveIntelligence`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My HiveMind Achievements',
+                    text: text,
+                    url: window.location.href
+                });
+            }
+        }
+
+        // Simulate real-time activity
         setInterval(() => {
-            const activeUsers = document.getElementById('active-users');
-            const current = parseInt(activeUsers.textContent);
-            activeUsers.textContent = current + Math.floor(Math.random() * 3);
-        }, 5000);
+            const activities = [
+                '🧠 Alice just solved a complex problem',
+                '🌟 Bob earned the "Genius" badge',
+                '🚀 Carol contributed to a breakthrough'
+            ];
+            const feed = document.getElementById('activity-feed');
+            const div = document.createElement('div');
+            div.className = 'bg-gray-700 p-3 rounded-lg';
+            div.textContent = activities[Math.floor(Math.random() * activities.length)];
+            feed.prepend(div);
+            if(feed.children.length > 10) feed.lastChild.remove();
+        }, 3000);
 
-        // Confetti celebration on achievements
-        function celebrateAchievement() {
-            const confettiSettings = { target: 'confetti-container', max: 80 };
-            const confetti = new ConfettiGenerator(confettiSettings);
-            confetti.render();
-            setTimeout(() => confetti.clear(), 2500);
-        }
-
-        // Social sharing
-        function shareAchievement() {
-            const shareData = {
-                title: 'Join me on HiveMind!',
-                text: '🧠 I just reached Level 7 on HiveMind! Join the collective intelligence revolution!',
-                url: 'https://hivemind.app'
-            };
-            navigator.share(shareData);
-        }
-
-        // Simulate achievement unlock after 10 seconds
-        setTimeout(celebrateAchievement, 10000);
+        // Initialize with some random data
+        updatePoints(Math.floor(Math.random() * 50));
+        streak = Math.floor(Math.random() * 5);
+        document.getElementById('streak-count').textContent = streak;
     </script>
 </body>
 </html>
