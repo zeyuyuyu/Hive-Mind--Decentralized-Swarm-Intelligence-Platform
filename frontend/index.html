@@ -4,126 +4,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HiveMind - Join the Collective Intelligence</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .achievement-popup { animation: popup 0.5s ease-out; }
-        @keyframes popup { from {transform: scale(0);} to {transform: scale(1);} }
-        .pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(66, 153, 225, 0.7);} 70% {box-shadow: 0 0 0 10px rgba(66, 153, 225, 0);} 100% {box-shadow: 0 0 0 0 rgba(66, 153, 225, 0);} }
+        body {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: #0a0a2a;
+            color: #fff;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .hive-stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .contribution-graph {
+            background: rgba(0,255,0,0.1);
+            height: 200px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .achievement-banner {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 15px;
+            border-radius: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+        .hive-rank {
+            font-size: 24px;
+            color: #FFD700;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .swarm-pulse {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0,255,0,0.2) 0%, rgba(0,0,0,0) 70%);
+            animation: pulse 2s infinite;
+        }
+        .leaderboard {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 15px;
+        }
+        .user-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #4CAF50, #2196F3);
+            margin: 5px;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 0.6; }
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
-    <nav class="fixed top-0 w-full bg-gray-800 shadow-lg z-50">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="/assets/hive-logo.svg" class="h-8 w-8 mr-2">
-                <span class="text-xl font-bold">HiveMind</span>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="relative">
-                    <span class="text-2xl">🏆</span>
-                    <span id="points" class="absolute -top-2 -right-2 bg-yellow-500 rounded-full px-2 py-1 text-xs">0</span>
-                </div>
-                <div class="relative">
-                    <button id="streak-btn" class="pulse bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-lg">
-                        🔥 <span id="streak-count">0</span> Day Streak
-                    </button>
-                </div>
-            </div>
+<body>
+    <div class="container">
+        <h1>🐝 HiveMind Collective</h1>
+        
+        <div class="hive-stats">
+            <div>👥 Active Minds: <span id="active-users">2,847</span></div>
+            <div>🧠 Collective IQ: <span id="collective-iq">184</span></div>
+            <div>⚡ Swarm Power: <span id="swarm-power">67%</span></div>
         </div>
-    </nav>
 
-    <main class="container mx-auto px-6 pt-24">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-gray-800 rounded-xl p-6 shadow-xl">
-                <h2 class="text-2xl font-bold mb-4">Live Hive Activity</h2>
-                <div id="activity-feed" class="space-y-4 h-96 overflow-y-auto">
-                    <!-- Dynamic activity items -->
-                </div>
-            </div>
+        <div class="hive-rank">
+            🏆 Your Hive Rank: Grand Neural Node
+            <div class="user-badge">Level 42</div>
+        </div>
 
-            <div class="bg-gray-800 rounded-xl p-6 shadow-xl">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-2xl font-bold">Your Impact</h2>
-                    <button onclick="shareAchievements()" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg flex items-center">
-                        🌟 Share Progress
-                    </button>
-                </div>
-                <div id="achievements" class="grid grid-cols-3 gap-4">
-                    <!-- Achievement badges -->
-                </div>
+        <div class="contribution-graph">
+            <div class="swarm-pulse"></div>
+            <!-- Dynamic visualization of user contributions -->
+        </div>
+
+        <div class="leaderboard">
+            <h2>🌟 Top Contributors</h2>
+            <div id="top-minds">
+                <!-- Dynamically populated -->
             </div>
         </div>
 
-        <div class="mt-8 bg-gray-800 rounded-xl p-6 shadow-xl">
-            <h2 class="text-2xl font-bold mb-4">Global Leaderboard</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg p-4">
-                    <h3 class="text-xl font-bold">🥇 First Place</h3>
-                    <div id="first-place" class="mt-2"></div>
-                </div>
-                <!-- Other leaderboard positions -->
-            </div>
+        <div class="achievement-banner" id="achievement" style="display:none">
+            🎉 Achievement Unlocked: "Hive Explorer"!
         </div>
-    </main>
-
-    <div id="achievement-popup" class="fixed bottom-4 right-4 hidden achievement-popup bg-green-500 text-white p-4 rounded-lg shadow-xl">
-        🎉 New Achievement Unlocked!
     </div>
 
     <script>
         // Gamification mechanics
-        let points = 0;
-        let streak = 0;
-        
-        function updatePoints(amount) {
-            points += amount;
-            document.getElementById('points').textContent = points;
-            checkAchievements();
+        let userScore = 0;
+        let achievements = [];
+
+        function updateStats() {
+            const activeUsers = document.getElementById('active-users');
+            const collectiveIq = document.getElementById('collective-iq');
+            const swarmPower = document.getElementById('swarm-power');
+            
+            // Create FOMO by showing numbers changing in real-time
+            setInterval(() => {
+                activeUsers.textContent = (2800 + Math.floor(Math.random() * 200)).toLocaleString();
+                collectiveIq.textContent = (180 + Math.floor(Math.random() * 8));
+                swarmPower.textContent = (65 + Math.floor(Math.random() * 5)) + '%';
+            }, 3000);
         }
 
-        function checkAchievements() {
-            if(points >= 100) showAchievement('First Century! 🎯');
-            if(streak >= 7) showAchievement('Week Warrior! 🗡️');
+        function unlockAchievement(name) {
+            const banner = document.getElementById('achievement');
+            banner.style.display = 'block';
+            banner.textContent = `🎉 Achievement Unlocked: "${name}"!`;
+            setTimeout(() => banner.style.display = 'none', 3000);
         }
 
-        function showAchievement(text) {
-            const popup = document.getElementById('achievement-popup');
-            popup.textContent = `🎉 Achievement Unlocked: ${text}`;
-            popup.classList.remove('hidden');
-            setTimeout(() => popup.classList.add('hidden'), 3000);
-        }
-
-        function shareAchievements() {
-            const text = `🚀 I've earned ${points} points on HiveMind with a ${streak}-day streak! Join the collective intelligence revolution! #HiveMind #CollectiveIntelligence`;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'My HiveMind Achievements',
-                    text: text,
-                    url: window.location.href
-                });
-            }
-        }
-
-        // Simulate real-time activity
-        setInterval(() => {
-            const activities = [
-                '🧠 Alice just solved a complex problem',
-                '🌟 Bob earned the "Genius" badge',
-                '🚀 Carol contributed to a breakthrough'
+        // Social proof and competition
+        function updateLeaderboard() {
+            const topMinds = document.getElementById('top-minds');
+            const leaders = [
+                {name: 'NeuralNinja', score: 2847},
+                {name: 'SwarmSage', score: 2533},
+                {name: 'HiveMaster', score: 2312}
             ];
-            const feed = document.getElementById('activity-feed');
-            const div = document.createElement('div');
-            div.className = 'bg-gray-700 p-3 rounded-lg';
-            div.textContent = activities[Math.floor(Math.random() * activities.length)];
-            feed.prepend(div);
-            if(feed.children.length > 10) feed.lastChild.remove();
-        }, 3000);
+            
+            topMinds.innerHTML = leaders.map((leader, i) => 
+                `<div class="user-badge">${i+1}. ${leader.name} - ${leader.score}🔥</div>`
+            ).join('');
+        }
 
-        // Initialize with some random data
-        updatePoints(Math.floor(Math.random() * 50));
-        streak = Math.floor(Math.random() * 5);
-        document.getElementById('streak-count').textContent = streak;
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            updateLeaderboard();
+            
+            // Trigger achievements randomly to keep users engaged
+            setInterval(() => {
+                if(Math.random() > 0.7) {
+                    unlockAchievement(['Mind Melding Master', 'Swarm Synchronizer', 'Neural Network Nexus'][Math.floor(Math.random() * 3)]);
+                }
+            }, 45000);
+        });
     </script>
 </body>
 </html>
